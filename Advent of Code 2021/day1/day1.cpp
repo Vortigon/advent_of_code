@@ -86,7 +86,7 @@ int main()
 		Conveyor depths("input.txt");
 		while (depths.next()) ;
 
-		std::cout << depths.getIncreases() << std::endl;
+		std::cout << "Increases part two: " << depths.getIncreases() << std::endl;
 	}
 	catch (Conveyor::Exception code)
 	{
