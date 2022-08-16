@@ -15,17 +15,17 @@ public:
 	};
 
 	Submarine()
-		: part{Part::one}, value {	0 }, x{ 0 }, y{ 0 }, aim{ 0 }
+		: part{ Part::one }, value { 0 }, x{ 0 }, y{ 0 }, aim{ 0 }
 	{}
 	
 	bool recieveCommand(std::ifstream& file)
 	{
 		if (!file.is_open())
-			return false;
+			{ return false; }
 
 		file >> command >> value;
 		if (file.peek() == EOF) 
-			return false;
+			{ return false; }
 		
 		handleCommand();
 		return true;
@@ -49,21 +49,20 @@ private:
 		{
 			case Part::one:
 			{
-				if (command == "up") y -= value;
-				if (command == "down") y += value;
-				if (command == "forward") x += value;
+				if (command == "up") { y -= value; }
+				if (command == "down") { y += value; }
+				if (command == "forward") { x += value; }
 				break;
 			}
 			case Part::two:
 			{
-				if (command == "up")	 aim -= value;
-				if (command == "down") aim += value;
+				if (command == "up") { aim -= value; }
+				if (command == "down") { aim += value; }
 				if (command == "forward")
 				{
 					x += value;
 					y += value * aim;
 				}
-				break;
 			}
 		}
 		command.clear();
@@ -78,19 +77,19 @@ private:
 int main()
 {
 	std::ifstream file("input.txt");
-	if (!file.is_open()) exit(-2);
+	if (!file.is_open()) { exit(-2); }
 
 	Submarine boat;
 
 	while (boat.recieveCommand(file)) {}
 
-	std::cout << "Answer part 1: " << boat.getAnswer() << std::endl;
+	std::cout << "Answer part 1: " << boat.getAnswer() << '\n';
 	file.close();
 
 	boat.changeTaskPart(Submarine::Part::two);
 
 	file.open("input.txt");
-	if (!file.is_open()) exit(-2);
+	if (!file.is_open()) { exit(-2); }
 
 	while (boat.recieveCommand(file)) {}
 

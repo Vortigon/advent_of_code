@@ -14,16 +14,16 @@ public:
 	};
 
 	Conveyor(std::string file_name)	
-		: file(file_name), depth{ -1, -1, -1, -1 }, increases { 0 } 
+		: file{ file_name }, depth{ -1, -1, -1, -1 }, increases{ 0 }
 	{
 		if (!file.is_open())
-		{throw Exception::FILE_NOT_OPEN;}
+		{ throw Exception::FILE_NOT_OPEN; }
 
 		for (int i = 0; i < 4; i++)
 		{
 			file >> depth[i];
 			if (file.peek() == EOF)
-			{throw Exception::NOT_ENOUGH_VALUES;}
+			{ throw Exception::NOT_ENOUGH_VALUES; }
 		}
 	}
 
@@ -32,7 +32,7 @@ public:
 	bool next()
 	{
 		if (depth[0] < depth[3])
-			{increases++;}
+			{ increases++; }
 
 		depth[0] = depth[1];
 		depth[1] = depth[2];
@@ -40,7 +40,7 @@ public:
 
 		file >> depth[3];
 		if (file.peek() == EOF)
-			return false;
+			{ return false; }
 
 		return true;
 	}
@@ -59,8 +59,8 @@ private:
 int main()
 {
 	std::ifstream file("input.txt");
-	if (!file.is_open()) exit(-2);
-	if (file.eof()) exit(-3);
+	if (!file.is_open()) { exit(-2); }
+	if (file.eof()) { exit(-3); }
 
 	int depth, prev_depth{ 0 };
 	file >> depth;
@@ -77,7 +77,8 @@ int main()
 			file.close();
 			break;
 		}
-		if (depth > prev_depth) increases++;
+
+		if (depth > prev_depth) { increases++; }
 	}
 	std::cout << "Increases: " << increases << std::endl;
 
@@ -104,5 +105,9 @@ int main()
 			}
 		}
 	}
-	catch (...) { std::cout << "Unexpected error." << std::endl; exit(-10); }
+	catch (...)
+	{ 
+		std::cout << "Unexpected error." << std::endl;
+		exit(-10);
+	}
 }
