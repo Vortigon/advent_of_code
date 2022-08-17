@@ -45,7 +45,7 @@ public:
 		return true;
 	}
 
-	unsigned int getIncreases() { return increases; }
+	unsigned int getIncreases() const { return increases; }
 
 private:
 	Conveyor();

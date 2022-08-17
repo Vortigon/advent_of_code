@@ -31,7 +31,7 @@ public:
 		return true;
 	}
 
-	int getAnswer() { return x * y; }
+	int getAnswer() const { return x * y; }
 
 	void changeTaskPart(Part p)
 	{
