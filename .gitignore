@@ -3,4 +3,5 @@
 *.vcxproj.*
 *.vcxproj
 *.sln
+test.txt
 Debug
