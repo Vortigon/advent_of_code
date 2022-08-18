@@ -1,9 +1,7 @@
 ﻿/*--- Day 2: Dive! ---*/
-/*Input file name is "input.txt", it is located in the same folder as day1.cpp*/
 
 #include <iostream>
 #include <fstream>
-#include <string>
 
 class Submarine
 {

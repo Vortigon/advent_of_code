@@ -1,5 +1,4 @@
 ﻿/*--- Day 1: Sonar Sweep ---*/
-/*Input file name is "input.txt", it is located in the same folder as day1.cpp*/
 
 #include <fstream>
 #include <iostream>

@@ -16,9 +16,7 @@ int Diagnostic::insertLine(std::ifstream& file)
 	if (!amount)
 	{
 		if (!allocAmount())
-		{
-			return -3;
-		}
+		{ return -3; }
 	}
 
 	for (size_t i = 0; i < length; i++)
@@ -28,12 +26,11 @@ int Diagnostic::insertLine(std::ifstream& file)
 			amount[i].zeros++;
 			continue;
 		}
-		if (bincode[i] == '1')
-		{
-			amount[i].ones++;
-		}
+		if (bincode[i] == '1')	{ amount[i].ones++; }
 	}
+
 	binTree_root.insertLine(bincode, length);
+
 	bincode.clear();
 	return 0;
 }
@@ -45,13 +42,8 @@ uint32_t Diagnostic::getPowerConsumption() const
 	for (size_t i = 0; i < length; i++)
 	{
 		if (amount[i].ones >= amount[i].zeros)
-		{
-			gamma |= 1 << (length - 1 - i);
-		}
-		else
-		{
-			epsilon |= 1 << (length - 1 - i);
-		}
+		{ gamma |= 1 << (length - 1 - i); }
+		else	{ epsilon |= 1 << (length - 1 - i); }
 	}
 
 	return gamma * epsilon;
@@ -64,18 +56,19 @@ uint32_t Diagnostic::getLifeSupportRating() const
 
 	binTree_root.recursiveSearch(buffer, Tree::SF::SF_ModeO2);
 	binToDec(buffer, o2);
+
 	binTree_root.recursiveSearch(buffer, Tree::SF::SF_ModeCO2);
 	binToDec(buffer, co2);
-	/*1101 1111 0101 =3573*/
-	/*"0001 0010 0001 = 289"*/
+
 	return o2 * co2;
 }
 
 bool Diagnostic::allocAmount()
 {
-	if (length > sizeof(uint32_t) * 8) return false;
+	if (length > sizeof(uint32_t) * 8) { return false; }
+
 	amount = new Bin[length];
-	if (!amount) return false;
+	if (!amount) { return false; }
 
 	for (size_t i = 0; i < length; i++)
 	{
@@ -90,9 +83,7 @@ void Diagnostic::binToDec(std::string& buffer, uint32_t& value) const
 	for (size_t i = 0; i < length; i++)
 	{
 		if (buffer[i] == '1')
-		{
-			value |= 1 << (length - 1 - i);
-		}
+		{ value |= 1 << (length - 1 - i); }
 	}
 	buffer.clear();
 }

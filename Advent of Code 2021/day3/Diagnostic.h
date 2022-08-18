@@ -18,7 +18,7 @@ private:
 	struct Bin 
 	{
 		uint32_t zeros, ones;
-	}*amount;
+	} *amount;
 
 	Tree binTree_root;
 
