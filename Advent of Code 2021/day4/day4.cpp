@@ -110,6 +110,8 @@ public:
 	Bingo(bool squid)
 		: board_won{ 0 }, squid_must_win{ squid } {}
 
+	~Bingo() { row.~vector(); }
+
 	int getInput(std::ifstream& file)
 	{
 		if (!file.is_open()) { return -2; }
@@ -161,10 +163,12 @@ private:
 
 		return true;
 	}
+
 	struct BoardWon
 	{
 		int number, turn, score;
 	} board_won;
+
 	bool squid_must_win;
 	std::vector<int> row;
 };
