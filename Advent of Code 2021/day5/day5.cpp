@@ -126,7 +126,7 @@ private:
 			matrix[begin.x][begin.y]++;
 			begin += iter;
 		}
-		//matrix[begin.x][begin.y]++;
+		matrix[begin.x][begin.y]++;
 	}
 	static constexpr size_t size{ 1000 };
 
