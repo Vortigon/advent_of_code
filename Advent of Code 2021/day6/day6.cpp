@@ -23,17 +23,7 @@ public:
 		return true;
 	}
 
-	uint64_t getSum() const
-	{
-		uint64_t sum{ 0 };
-		for (uint8_t i = 0; i < 9; i++)
-		{
-			sum += amount[i];
-		}
-		return sum;
-	}
-
-	void simulate(uint16_t days)
+	uint64_t simulate(uint16_t days)
 	{
 		for (uint16_t i = 0; i < days; i++)
 		{
@@ -45,6 +35,12 @@ public:
 			amount[6] += temp;
 			amount[8] = temp;
 		}
+		uint64_t sum{ 0 };
+		for (uint8_t i = 0; i < 9; i++)
+		{
+			sum += amount[i];
+		}
+		return sum;
 	}
 private:
 	uint64_t amount[9];
@@ -58,10 +54,8 @@ int main()
 	Fish fish;
 	if (fish.init(file))
 	{
-		fish.simulate(80);
-		std::cout << "80 days: " << fish.getSum();
-		fish.simulate(256 - 80);
-		std::cout << "\n256 days: " << fish.getSum();
+		std::cout << "80 days: " << fish.simulate(80);
+		std::cout << "\n256 days: " << fish.simulate(256 - 80);
 	}
 	file.close();
 }
