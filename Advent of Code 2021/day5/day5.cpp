@@ -15,7 +15,7 @@ struct Vec2
 	bool load(std::ifstream& file)
 	{
 		file >> x;
-		if (file.peek() == EOF) return false;
+		if (file.peek() == EOF) { return false; }
 		file.ignore(1, ',');
 		file >> y;
 		return true;
@@ -71,7 +71,7 @@ struct VentLine
 		Vec2 pos2;
 		pos2.load(file);
 		dir = pos2 - pos;
-		if (dir.x && dir.y && ( (dir.x != dir.y) && (dir.x != -dir.y) ) ) return false;
+		if (dir.x && dir.y && ((dir.x != dir.y) && (dir.x != -dir.y))) { return false; }
 		return true;
 	}
 
@@ -90,7 +90,7 @@ public:
 
 		VentLine line;
 
-		if (!line.load(file)) return false;
+		if (!line.load(file)) { return false; }
 		markLine(line);
 
 		return true;
@@ -140,6 +140,7 @@ int main()
 	if (!file.is_open()) { exit(-2); }
 
 	Matrix* mat = new Matrix{ false };
+	if (!mat) { exit(-3); }
 
 	while (mat->inputVentLine(file));
 	std::cout << "Without diagonals: " << mat->getCrossCount() << std::endl;
@@ -151,7 +152,8 @@ int main()
 	if (!file.is_open()) { exit(-2); }
 
 	mat = new Matrix{ true };
-	
+	if (!mat) { exit(-3); }
+
 	while (mat->inputVentLine(file));
 	std::cout << "With diagonals: " << mat->getCrossCount() << std::endl;
 
