@@ -25,28 +25,9 @@ public:
 
 			new_num -= final_pos;
 
-			if (new_num > 0)
-			{
-				plus.amount++;
-				if (plus.amount == 1 ||
-					(new_num < plus.min_from_zero) )
-				{
-					plus.min_from_zero = new_num;
-				}
-			}
+			handleDistance(new_num);
 
-			if (new_num < 0)
-			{
-				minus.amount++;
-				if (minus.amount == 1 ||
-					(-new_num < minus.min_from_zero) )
-				{
-					minus.min_from_zero = -new_num;
-				}
-			}
-
-			if (new_num == 0) { zeros++; }
-			else { shift(); }
+			if (new_num) { shift(); }
 
 			if (file.get() == '\n') { break; }
 		}
@@ -67,7 +48,7 @@ public:
 		return fuel;
 	}
 
-	//Probably that's more menthaGlacier's engineering that crab's
+	//Probably that's more menthaGlacier's engineering that crabs'
 	uint64_t getCrabEnginFuelConsum() const
 	{
 		uint64_t fuel{ 0 };
@@ -75,13 +56,42 @@ public:
 		for (const int& i : crab_pos)
 		{
 			int distance = i - arith_mean;
-			if (distance < 0) distance *= -1;
+			if (distance < 0) { distance *= -1; }
 			fuel += (1 + distance) * distance / 2;
 		}
 		return fuel;
 	}
 
 private:
+
+	void handleDistance(int distance)
+	{
+		if (distance == 0)
+		{
+			zeros++;
+			return;
+		}
+
+		if (distance > 0)
+		{
+			if (plus.amount == 0 ||
+				(distance < plus.min_from_zero))
+			{
+				plus.min_from_zero = distance;
+			}
+			plus.amount++;
+		}
+		else
+		{
+			distance *= -1;
+			if (minus.amount == 0 ||
+				(distance < minus.min_from_zero))
+			{
+				minus.min_from_zero = distance;
+			}
+			minus.amount++;
+		}
+	}
 
 	void shift()
 	{
@@ -106,38 +116,7 @@ private:
 		zeros = 0;
 
 		for (const int& i : crab_pos)
-		{
-			int distance = i - final_pos;
-
-			if (distance == 0)
-			{
-				zeros++;
-				continue;
-			}
-
-			if (distance > 0)
-			{
-				if (plus.amount == 0 ||
-					(distance < plus.min_from_zero) )
-				{
-					plus.min_from_zero = distance;
-				}
-				plus.amount++;
-				continue;
-			}
-
-			if (distance < 0)
-			{
-				distance *= -1;
-				if (minus.amount == 0 ||
-					(distance < minus.min_from_zero))
-				{
-					minus.min_from_zero = distance;
-				}
-				minus.amount++;
-			}
-		}
-
+		{ handleDistance(i - final_pos); }
 	}
 
 	struct
@@ -155,6 +134,7 @@ int main()
 	Crab crab;
 	if (crab.loadCrabs(file))
 	{
-		std::cout << crab.getFuelConsumption() << ' ' << crab.getCrabEnginFuelConsum() << std::endl;
+		std::cout << "Part1: " << crab.getFuelConsumption() <<
+			"\nPart2: " << crab.getCrabEnginFuelConsum() << std::endl;
 	}
 }
