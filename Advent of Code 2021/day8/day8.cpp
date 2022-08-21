@@ -1,7 +1,6 @@
 ﻿/*--- Day 8: Seven Segment Search ---*/
 
 #include <iostream>
-#include <string>
 #include "Digits.h"
 
 int main()

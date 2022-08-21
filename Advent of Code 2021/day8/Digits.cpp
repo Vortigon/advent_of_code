@@ -1,6 +1,6 @@
 #include "Digits.h"
 Digits::Digits()
-	: uniq_digits{ 0 }, segment{ 0 }, sum{ 0 }, read_strings{ 0 } {}
+	: uniq_digits{ 0 }, segment{ 0 }, sum{ 0 } {}
 
 bool Digits::getInput(std::ifstream& file)
 {

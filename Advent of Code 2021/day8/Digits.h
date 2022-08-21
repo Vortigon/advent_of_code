@@ -38,7 +38,7 @@ private:
 
 	size_t uniq_digits;
 	char segment[7];
-	int sum, read_strings;
+	int sum;
 	std::string digit_str[10];
 };
 
