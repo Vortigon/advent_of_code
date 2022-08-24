@@ -89,6 +89,9 @@ void HeightMap::findLowPoints(std::string* first, std::string* second, std::stri
 		{
 			risk_level += 1 + height - '0';
 			low_point = true;
+			//maybe i should make local vector of LP indexes 
+			// so it will allow to check connecting of basins later
+			//for example in new basin r_index doesn't have information is it LP or not
 		}
 		if (first)
 		{
@@ -106,16 +109,19 @@ void HeightMap::findLowPoints(std::string* first, std::string* second, std::stri
 }
 
 void HeightMap::findNew(std::vector<Basin>& basins, const size_t& i, bool& low_point,
-	std::string* str1, std::string* str2, size_t& size)
+	std::string& mid_str, std::string* third, size_t& size)
 {
-	if ((*str1)[i] == '9') { return; }
+	if (mid_str[i] == '9') { return; }
 
 	//in this context true means that we can use index to create new basin
 	// so no basin includes that index and string has that index
 	bool l_index_free{ i == 0 ? false : true }, r_index_free{ i == size - 1 ? false : true };
 
-	if (l_index_free && (*str1)[i - 1] == '9') { l_index_free = false; }
-	if (r_index_free && (*str1)[i - 1] == '9') { l_index_free = false; }
+	//does it even make sense to check left?
+	//like, it litterally goes from left side to right
+	//i guess i'll keep it until tests
+	if (l_index_free && mid_str[i - 1] == '9') { l_index_free = false; }
+	if (r_index_free && mid_str[i - 1] == '9') { l_index_free = false; }
 
 	for (Basin& basin : basins)
 	{
@@ -130,10 +136,27 @@ void HeightMap::findNew(std::vector<Basin>& basins, const size_t& i, bool& low_p
 	//if no basin includes i-index then we possibly found new basin
 	//its start size is 1 because it includes  i-index already
 	size_t new_basin_size{ 1 };
-	//if "it's possible to include left of i index to new basin"
-	//and their heights differ (so one of them is smaller)
-	if (l_index_free && ((*str1)[i - 1] != (*str)[i]))
+
+	//if "it's possible to include left/right of i index to new basin"
+	if (l_index_free) { new_basin_size++; }
+	if (r_index_free) { new_basin_size++; }
+
+	if (new_basin_size > 1)
 	{
-		new_basin_size++;
+		Basin new_basin(new_basin_size, low_point);
+
+		if (l_index_free) { new_basin.addLedge(i - 1); }
+		new_basin.addLedge(i);
+		if (r_index_free) { new_basin.addLedge(i + 1); }
+
+		basins.push_back(new_basin);
 	}
+
+	//if there's no horizontal expandings maybe basin has vertical continue like
+	// 999
+	// 989		<- mid_str is here 
+	// 979		<- third is here
+	// 969
+	//so there we should check third line for it
+	//else we just expanding it in second line and then continuing in third like usual basin
 }

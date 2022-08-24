@@ -13,4 +13,6 @@ int main()
 	{
 		std::cout << "Risk level: " << map.getRiskLevel() << std::endl;
 	}
+
+
 }
