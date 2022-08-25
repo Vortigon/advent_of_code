@@ -9,7 +9,7 @@ bool Basin::hasLedge(size_t i) const
 	int ledge_size = ledge.size();
 	for (int j = 0; j < ledge_size; j++)
 	{
-		if (i == ledge[j]) return true;
+		if (i == ledge[j]) { return true; }
 	}
 	return false;
 }
@@ -64,9 +64,10 @@ void Basin::findNewBasins(std::string& second, std::string* third, std::vector<B
 		{
 			if (j == basins_amount) { basins.push_back(new_basin); break; }
 
-			if (*(new_basin.ledge.end() - 1) < basins[j].ledge[0])
+			if (*(new_basin.ledge.begin()) < basins[j].ledge[0])
 			{
 				place += j;
+				basins.insert(place, new_basin);
 				break;
 			}
 		}
@@ -138,6 +139,11 @@ void Basin::expandBasin(std::string& basin_str, size_t remain) //expanding basin
 			i++;
 		}
 
+		if (i >= ledge.size())
+		{
+			int a = 0;
+			a++;
+		}
 		while (ledge[i] < str_size - 1)	//expanding to right
 		{
 			if (basin_str[ledge[i] + 1] == '9') { break; }
@@ -145,6 +151,11 @@ void Basin::expandBasin(std::string& basin_str, size_t remain) //expanding basin
 			if ( (i < ledge_size - 1) && (ledge[i] + 1 == ledge[i + 1]) )
 			{
 				i++;
+				if (i >= ledge.size())
+				{
+					int a = 0;
+					a++;
+				}
 				continue;
 			}
 			else
@@ -153,7 +164,13 @@ void Basin::expandBasin(std::string& basin_str, size_t remain) //expanding basin
 				size++;
 				ledge_size++;
 				i++;
+				if (i >= ledge.size())
+				{
+					int a = 0;
+					a++;
+				}
 			}
 		}
 	}
 }
+/*"9869998789964334578995937892397654398945689345678979987643012398967898767998776798890234999898957898"*/

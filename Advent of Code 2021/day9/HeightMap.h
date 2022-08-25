@@ -7,13 +7,17 @@ class HeightMap
 public:
 	HeightMap();
 
-	bool getInput(std::ifstream&);
+	bool getInput(std::ifstream& file);
 
 	int getRiskLevel() const { return risk_level; }
-private:
-	void findLowPoints(std::string*, std::string*, std::string*,
-		std::vector<Basin>&);
+	size_t getMaxSizes() const { return max_size[0] * max_size[1] * max_size[2]; }
 
-	int risk_level, max_size[3];
+private:
+	void findLowPoints(std::string* first, std::string* second, std::string* third,
+		std::vector<Basin>& basins);
+	void checkMaxSize(size_t basin_size);
+
+	int risk_level;
+	size_t max_size[3];
 	std::string str[3];
 };

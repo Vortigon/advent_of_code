@@ -11,11 +11,11 @@ bool HeightMap::getInput(std::ifstream& file)
 
 	while (i != -2)
 	{
+		if (i != -1) { file >> str[i]; }
 		switch (i)
 		{
 		case 0:
 		{
-			file >> str[i];
 			if (file.peek() == EOF)
 			{
 				findLowPoints(str + 1, str + 2, nullptr, basins);
@@ -30,7 +30,6 @@ bool HeightMap::getInput(std::ifstream& file)
 		}
 		case 1:
 		{
-			file >> str[i];
 			if (file.peek() == EOF)
 			{
 				findLowPoints(str + 2, str, nullptr, basins);
@@ -45,7 +44,6 @@ bool HeightMap::getInput(std::ifstream& file)
 		}
 		case 2:
 		{
-			file >> str[i];
 			if (file.peek() == EOF)
 			{
 				findLowPoints(str, str + 1, nullptr, basins);
@@ -86,5 +84,57 @@ void HeightMap::findLowPoints(std::string* first, std::string* second, std::stri
 			((i < size - 1) && (height < (*second)[i + 1]) || i == size - 1)
 			)
 		{ risk_level += 1 + height - '0';	}
+	}
+
+	Basin::findNewBasins(*second, third, basins);
+
+	size_t basins_amount{ basins.size() };
+	if (third)
+	{
+		
+		for (size_t i{ 0 }; i < basins_amount; i++)
+		{
+			Basin& returned{ basins[i].continueBasin(*second, *third, basins) };
+
+			size_t ledge_size{basins[i].getLedgeSize()};
+
+			if (!ledge_size || (&basins[i] != &returned))
+			{
+				if (!ledge_size) { checkMaxSize(basins[i].getSize()); }
+				basins.erase(basins.begin() + i);
+				basins_amount--;
+				i--;
+			}
+		}
+	}
+	else
+	{
+		for (size_t i{ 0 }; i < basins_amount; i++)
+		{
+			checkMaxSize(basins[i].getSize());
+			basins.erase(basins.begin() + i);
+			basins_amount--;
+			i--;
+		}
+	}
+}
+
+void HeightMap::checkMaxSize(size_t basin_size)
+{
+	size_t tmp;
+	if (basin_size > max_size[0]) { max_size[0] = basin_size; }
+
+	if (max_size[0] > max_size[1])
+	{
+		tmp = max_size[1];
+		max_size[1] = max_size[0];
+		max_size[0] = tmp;
+	}
+
+	if (max_size[1] > max_size[2])
+	{
+		tmp = max_size[2];
+		max_size[2] = max_size[1];
+		max_size[1] = tmp;
 	}
 }

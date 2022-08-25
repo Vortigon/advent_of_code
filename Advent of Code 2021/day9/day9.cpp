@@ -11,7 +11,7 @@ int main()
 	HeightMap map;
 	if (map.getInput(file))
 	{
-		std::cout << "Risk level: " << map.getRiskLevel() << std::endl;
+		std::cout << "Risk level: " << map.getRiskLevel() << 
+			"\nBasins' max sizes multiplication: " << map.getMaxSizes() << std::endl;
 	}
-	std::string str1 = "999898934", str2 = "987796899", str3 = "865685578";
 }
