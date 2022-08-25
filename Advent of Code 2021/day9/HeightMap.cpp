@@ -6,7 +6,7 @@ bool HeightMap::getInput(std::ifstream& file)
 {
 	if (!file.is_open()) { return false; }
 
-	int i{ -1 };
+	char i{ -1 };
 	std::vector<Basin> basins;
 
 	while (i != -2)
