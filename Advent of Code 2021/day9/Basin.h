@@ -13,10 +13,9 @@ public:
 	bool hasLedge(size_t) const;
 	Basin& expandNew(std::string&, std::vector<Basin>&);
 	Basin& continueBasin(std::string&, std::string&, std::vector<Basin>&, size_t&);
-	void expandBasin(std::string&, std::vector<Basin>&);
+	void expandBasin(std::string&);
 private:
 	size_t size;
 	bool connected;
 	std::vector<size_t> ledge;
 };
-

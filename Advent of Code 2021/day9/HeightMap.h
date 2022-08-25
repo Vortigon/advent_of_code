@@ -20,4 +20,3 @@ private:
 	int risk_level, max_size[3];
 	std::string str[3];
 };
-

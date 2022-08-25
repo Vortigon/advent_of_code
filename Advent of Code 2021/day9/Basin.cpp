@@ -72,9 +72,9 @@ Basin& Basin::expandNew(std::string& mid_str, std::vector<Basin>& basins)
 	return *this;//indev placeholder
 }
 
-Basin& Basin::continueBasin(std::string& from_str, std::string& to_str, std::vector<Basin>& basins, size_t& remain)
+Basin& Basin::continueBasin		//expanding basin to next str
+(std::string& from_str, std::string& to_str, std::vector<Basin>& basins, size_t& remain)
 {
-	//expanding basin to next str
 	size_t ledge_size{ ledge.size() };
 	remain = ledge_size;
 	bool check_other_basin{ true };	//checking once because of input
@@ -93,6 +93,7 @@ Basin& Basin::continueBasin(std::string& from_str, std::string& to_str, std::vec
 			for (Basin& basin : basins)
 			{
 				if (&basin == this || !check_other_basin) { break; }
+
 				if (basin.hasLedge(ledge[i]))
 				{
 					remain--;
@@ -118,33 +119,41 @@ Basin& Basin::continueBasin(std::string& from_str, std::string& to_str, std::vec
 		}
 	}
 
-	if (ledge_size > 0) { expandBasin(to_str, basins); }
+	if (ledge_size > 0) { expandBasin(to_str); }
 	return *this;
 }
 
-void Basin::expandBasin(std::string& basin_str, std::vector<Basin>& basins)	//REWRITE
+void Basin::expandBasin(std::string& basin_str) //expanding basin in its last str
 {
-	////expanding basin in its last str
-	//size_t ledge_size{ ledge.size() };
-	//for (size_t i{ 0 }; i < ledge_size;)
-	//{
-	//	if (i > 0)	//expanding to left
-	//	{
-	//		for (size_t j{ i - 1 }; j >= 0; j--)
-	//		{
-	//			if (basin_str[j] == '9') { break; }
+	size_t ledge_size{ ledge.size() }, str_size{ basin_str.size() };
+	for (size_t i{ 0 }; i < ledge_size; i++)
+	{
+		for (size_t j{ 1 }; j <= ledge[i]; j++)//expanding to left
+		{
+			if (basin_str[ledge[i] - j] == '9') { break; }
 
-	//			for (Basin& basin : basins)
-	//			{
-	//				if (basin.hasLedge(j))
-	//				{
+			size++;
+			ledge_size++;
+			addLedge(ledge[i] - j);
+			i++;
+		}
 
-	//				}
-	//			}
+		while (ledge[i] < str_size - 1)	//expanding to right
+		{
+			if (basin_str[ledge[i] + 1] == '9') { break; }
 
-	//			size++;
-	//			addLedge(j);
-	//		}
-	//	}
-	//}
+			if ( (i < ledge_size - 1) && (ledge[i] + 1 == ledge[i + 1]) )
+			{
+				i++;
+				continue;
+			}
+			else
+			{
+				addLedge(ledge[i] + 1);
+				size++;
+				ledge_size++;
+				i++;
+			}
+		}
+	}
 }
