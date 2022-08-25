@@ -11,7 +11,9 @@ public:
 	Basin& operator+=(Basin&);
 	void addLedge(size_t);
 	bool hasLedge(size_t) const;
-	Basin* expandNew(std::string&, std::vector<Basin>&);
+	Basin& expandNew(std::string&, std::vector<Basin>&);
+	Basin& continueBasin(std::string&, std::string&, std::vector<Basin>&, size_t&);
+	void expandBasin(std::string&, std::vector<Basin>&);
 private:
 	size_t size;
 	bool connected;
