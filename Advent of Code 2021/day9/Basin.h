@@ -6,16 +6,16 @@ class Basin
 {
 public:
 	Basin();
-	Basin(size_t, bool);
+	Basin(size_t);
 
-	Basin& operator+=(Basin&);
+	static void findNewBasins(std::string&, std::string*, std::vector<Basin>&);
+
 	void addLedge(size_t);
 	bool hasLedge(size_t) const;
-	Basin& expandNew(std::string&, std::vector<Basin>&);
-	Basin& continueBasin(std::string&, std::string&, std::vector<Basin>&, size_t&);
-	void expandBasin(std::string&);
+	//Basin& expandNew(std::string&, std::vector<Basin>&);
+	Basin& continueBasin(std::string&, std::string&, std::vector<Basin>&);
+	void expandBasin(std::string&, size_t remain = 0);
 private:
 	size_t size;
-	bool connected;
 	std::vector<size_t> ledge;
 };
