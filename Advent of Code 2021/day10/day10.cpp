@@ -6,10 +6,10 @@ int main()
 {
     std::ifstream file{ "input.txt" };
     if (!file.is_open()) { exit(-2); }
-    try
+
+    LineParser parser;
+    if (parser.getInput(file))
     {
-        BracketStack b{ 0 };
+        std::cout << "Parser score: " << parser.getScore() << std::endl;
     }
-    catch (const char* str) { std::cout << str << std::endl; }
-    std::cout << "Hello World!\n";
 }
