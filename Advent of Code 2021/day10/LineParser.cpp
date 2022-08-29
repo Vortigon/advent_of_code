@@ -18,23 +18,33 @@ bool LineParser::getInput(std::ifstream& file)
 }
 
 void LineParser::parse(std::string& line)
-{	size_t size{ line.size() };
-	BracketStack stack{ size };
-	for (size_t i{ 0 }; i < size; i++)
+{
+	size_t size{ line.size() };
+	try
 	{
-		if (!stack.load(line[i]))
-		{
+		BracketStack stack{ size };
 
-			switch (line[i])
+		for (size_t i{ 0 }; i < size; i++)
+		{
+			if (!stack.load(line[i]))
 			{
-			case ')': {sntx_score += 3; return; }
-			case ']': {sntx_score += 57; return; }
-			case '}': {sntx_score += 1197; return; }
-			case '>': {sntx_score += 25137; return; }
+
+				switch (line[i])
+				{
+				case ')': {sntx_score += 3; return; }
+				case ']': {sntx_score += 57; return; }
+				case '}': {sntx_score += 1197; return; }
+				case '>': {sntx_score += 25137; return; }
+				}
 			}
 		}
+		insertScore(stack.autocomplete());
 	}
-	insertScore(stack.autocomplete());
+	catch (const char* str)
+	{
+		std::cout << str;
+		exit(-3);
+	}
 }
 
 uint64_t LineParser::getAutoScore()
