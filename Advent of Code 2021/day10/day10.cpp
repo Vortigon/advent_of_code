@@ -10,6 +10,7 @@ int main()
     LineParser parser;
     if (parser.getInput(file))
     {
-        std::cout << "Parser score: " << parser.getScore() << std::endl;
+        std::cout << "Syntax score: " << parser.getSyntaxScore() << 
+            "\nAutocomplete score: " << parser.getAutoScore() << std::endl;
     }
 }

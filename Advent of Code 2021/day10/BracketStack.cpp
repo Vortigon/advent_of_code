@@ -4,9 +4,9 @@ static const char* const opens = "([{<";
 static const char* const closes = ")]}>";
 
 BracketStack::BracketStack(size_t size)
-	: str_size{ size }, amount{ 0 }, stack{ nullptr }, bracket_amount{ 0 }
+	: str_size{ size }, amount{ 0 }, stack{ nullptr }
 {
-	if (size == 0)  
+	if (size == 0)
 	{ throw "\n[ERROR]: Bad string size to create stack!\n"; }
 
 	stack = new char[size] {0};
@@ -35,7 +35,6 @@ bool BracketStack::load(char bracket)
 bool BracketStack::push(char bracket)
 {
 	size_t index = getIndex(bracket);
-	bracket_amount[index]++;
 	stack[amount++] = bracket;
 	return true;
 }
@@ -43,20 +42,32 @@ bool BracketStack::push(char bracket)
 bool BracketStack::pop(char bracket)
 {
 	size_t index = getIndex(bracket);
-	if ((bracket_amount[index] == 0) || (stack[amount - 1] != opens[index]))
+	if ((amount == 0) || (stack[amount - 1] != opens[index]))
 	{
 		return false;
 	}
-	bracket_amount[index]--;
 	stack[--amount] = '\0';
 	return true;
 }
 
 size_t BracketStack::getIndex(char bracket)
 {
-	for (size_t i = 0; i < 4; i++)
+	for (size_t i{ 0 }; i < 4; i++)
 	{
 		if (bracket == opens[i] || bracket == closes[i]) return i;
 	}
 	return 0;
+}
+
+uint64_t BracketStack::autocomplete()
+{
+	uint64_t score{ 0 };
+	size_t remain{ amount };
+	while (remain > 0)
+	{
+		score *= 5;
+		score += static_cast<uint64_t>(getIndex(stack[remain - 1])) + 1;
+		remain--;
+	}
+	return score;
 }
