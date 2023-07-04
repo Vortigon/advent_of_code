@@ -66,19 +66,28 @@ const std::string Cave::END_CAVE_NAME = std::string("end");
 class Path {
 public:
 	bool addCave(const Cave& cave) {
-		if (passedSmallCave(cave)) { return false; }
+		if (has_double_pass && passedSmallCave(cave)) { return false; }
 		if (!cave_path.empty() && !cave_path.back().hasConnection(cave)) {
 			return false;
 		}
+
 		cave_path.push_back(cave);
-		if (cave.getSize() == Cave::Size::SMALL) { small_caves.insert(cave.getName()); }
+		if (cave.getSize() == Cave::Size::SMALL) {
+			if (!small_caves.insert(cave.getName()).second) {
+				has_double_pass = true;
+				double_passed_cave_name = cave.getName();
+			}
+		}
 		return true;
 	}
 
 	void removeLast() {
 		if (cave_path.empty()) { return; }
 		if (cave_path.back().getSize() == Cave::Size::SMALL) {
-			small_caves.erase(cave_path.back().getName());
+			if (hasDoublePass(cave_path.back().getName())) {
+				has_double_pass = false;
+				double_passed_cave_name.clear();
+			} else { small_caves.erase(cave_path.back().getName()); }
 		}
 		cave_path.pop_back();
 	}
@@ -97,7 +106,14 @@ public:
 		}
 		
 		for (const Cave& cave : cave_path.back().getConnections()) {
-			if (!passedSmallCave(cave)) { possible_connections.insert(cave.getName()); }
+			if (cave.getName() == Cave::startCaveName()) { continue; }
+
+			if (cave.getSize() == Cave::Size::SMALL) {
+				bool passed_small_cave = passedSmallCave(cave);
+				if ((passed_small_cave && has_double_pass)
+				|| (hasDoublePass(cave.getName()))) { continue; }
+			}
+			possible_connections.insert(cave.getName());
 		}
 
 		return possible_connections;
@@ -115,7 +131,15 @@ public:
 		}
 		std::cout << std::endl;
 	}
+
+	bool hasDoublePass() { return has_double_pass; }
 private:
+	bool hasDoublePass(std::string name) {
+		return has_double_pass && (double_passed_cave_name == name);
+	}
+
+	bool has_double_pass = false;
+	std::string double_passed_cave_name;
 	std::list<Cave> cave_path;
 	std::unordered_set<std::string> small_caves;
 };
@@ -137,11 +161,11 @@ public:
 		}
 	}
 
-	uint32_t findPaths() {
-		uint32_t path_amount = 0u;
+	std::pair<uint32_t, uint32_t> findPaths() {
+		uint32_t path_amount = 0u, double_pass_path_amount = 0u;
 
 		cave_map_t::iterator start_cave = caves.find(Cave::startCaveName());
-		if (start_cave == caves.end()) { return 0u; }
+		if (start_cave == caves.end()) { return {0u, 0u}; }
 
 		for (const auto& cave_name : start_cave->second.getConnections()) {
 			cave_map_t::iterator cave = caves.find(cave_name);
@@ -150,9 +174,9 @@ public:
 			Path path;
 			path.addCave(start_cave->second);
 			path.addCave(cave->second);
-			buildPaths(path, path_amount);
+			buildPaths(path, path_amount, double_pass_path_amount);
 		}
-		return path_amount;
+		return {path_amount, double_pass_path_amount};
 	}
 private:
 	typedef std::unordered_map<std::string, Cave> cave_map_t;
@@ -161,16 +185,22 @@ private:
 		caves.insert({name, {name}});
 	}
 
-	void buildPaths(Path& path, uint32_t& path_amount) {
-		std::unordered_set<std::string> possible_connections = path.getPossibleConnections();
+	void buildPaths(Path& path, uint32_t& path_amount,
+			uint32_t& double_pass_path_amount) {
+		std::unordered_set<std::string> possible_connections = path
+			.getPossibleConnections();
+
 		if (possible_connections.empty()) {
-			if (path.isComplete() ) { ++path_amount; }
+			if (path.isComplete()) {
+				if (!path.hasDoublePass()) { ++path_amount; }
+				++double_pass_path_amount;
+			}
 			return;
 		}
 
 		for(const auto& name : possible_connections) {
 			path.addCave(caves.find(name)->second);
-			buildPaths(path, path_amount);
+			buildPaths(path, path_amount, double_pass_path_amount);
 			path.removeLast();
 		}
 	}
@@ -181,6 +211,7 @@ private:
 int main() {
 	std::fstream file("input.txt");
 	CaveSystem cave_system(file);
-	std::cout << cave_system.findPaths() << std::endl;
+	std::pair<uint32_t, uint32_t> results = cave_system.findPaths();
+	std::cout << results.first << ' ' << results.second << std::endl;
 	return 0;
 }
